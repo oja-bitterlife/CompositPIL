@@ -1,5 +1,5 @@
 from bottle import Bottle, run, request, response
-import re, os.path
+import re, os, os.path
 import cv2
 
 app = Bottle()
@@ -10,13 +10,13 @@ def hello():
 
 @app.route('/canny')
 def canny():
-    print("---------------------------------")
-    print(list(request.params.items()))
+    # 出力先
+    output_dir = request.params["output_path"]
 
-    output_path = request.params["output_path"]
+    # 対象ファイルの検出
+    image_files = set([])  # 見つけたファイル記録場所
 
     image_names = ["image_name1", "image_name2", "image_name3"]
-    image_files = set([])  # 見つけたファイル記録場所
     for image_name in image_names:
         image_dir = os.path.dirname(request.params[image_name])
         image_file = os.path.basename(request.params[image_name])
@@ -34,19 +34,20 @@ def canny():
                     if match:
                         image_files.add(path)  # マッチしたので記録
 
-    print(output_path)
-    print(image_files)
+    # 出力先ディレクトリが無かったら作っておく
+    if not os.path.exists(output_dir) and len(image_files) > 0:
+        os.mkdir(output_dir)
 
-    # path = "C:/Users/jpibi/Desktop/test/tmp/"
-    # files = ["sample-{:03d}.png".format(i+1) for i in range(24)]
+    # Canny
+    for file_path in image_files:
+        img = cv2.imread(file_path)
+        minVal = int(max(0, (1.0 - 0.33) * 0.5))
+        maxVal = int(max(255, (1.0 + 0.33) * 0.5))
+        new_img = cv2.Canny(img, threshold1=minVal, threshold2=maxVal)
 
-    # for file in files:
-    #     im = cv2.imread(path + file)
-    #     minVal = int(max(0, (1.0 - 0.33) * 0.5))
-    #     maxVal = int(max(255, (1.0 + 0.33) * 0.5))
-    #     new_im = cv2.Canny(im, threshold1=minVal, threshold2=maxVal)
-
-    #     cv2.imwrite(path + "compil" + file, new_im)
+        # 出力先に保存
+        output_file_path = os.path.join(output_dir, os.path.basename(file_path))
+        cv2.imwrite(output_file_path, new_img)
 
     response.headers['Cache-Control'] = 'no-cache'
     return {'result':"Complete"}
