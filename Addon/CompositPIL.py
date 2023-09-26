@@ -6,10 +6,10 @@ from . import UI_SendPIL
 # ===========================================================================================
 # Compositing Tools Panel
 class COMPOSIT_PIL_PT_ui(bpy.types.Panel):
-    bl_label = "CompositPIL"
+    bl_label = "ConvertCanny"
     bl_space_type = "NODE_EDITOR"
     bl_region_type = "UI"
-    bl_category = "COMPIL"
+    bl_category = "CompositPIL"
     bl_idname = "COMPOSIT_PIL_PT_UI"
 #    bl_options = {'DEFAULT_CLOSED'}
 

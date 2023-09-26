@@ -137,7 +137,7 @@ def draw(self, context):
 # register/unregister
 # *****************************************************************************
 def register():
-    bpy.types.Scene.canny_output_path = bpy.props.StringProperty(name="output path", default="//")
+    bpy.types.Scene.canny_output_path = bpy.props.StringProperty(name="output path", default="//canny_edge")
     bpy.types.Scene.canny_data = bpy.props.CollectionProperty(type=CANNY_DATA)
     bpy.types.Scene.canny_after_reload = bpy.props.BoolProperty(name="after reload", default=True)
 

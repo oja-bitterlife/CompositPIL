@@ -79,7 +79,7 @@ def canny_service():
                 # 合成
                 canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r, canny_img_a))
             else:
-                # Aナシで合成
+                # A無しで合成
                 canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r))
 
         # 出力先に保存

@@ -15,11 +15,11 @@ bl_info = {
     "name" : "CompositPIL",
     "author" : "oja",
     "description" : "",
-    "blender" : (2, 80, 0),         
-    "version" : (0, 0, 1),
+    "blender" : (3, 6, 0),         
+    "version" : (0, 1, 0),
     "location" : "",
     "warning" : "",
-    "category" : "Generic"
+    "category" : "Render"
 }
 
 from . import auto_load
