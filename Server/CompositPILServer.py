@@ -11,16 +11,16 @@ def hello():
 @app.route('/canny')
 def canny():
     # 出力先
-    output_dir = request.params["output_path"]
+    output_dir = request.params["canny_output_path"]
+    canny_data_list = request.params["canny_data"]
 
     # 対象ファイルの検出
     image_files = set([])  # 見つけたファイル記録場所
 
-    image_names = ["image_name1", "image_name2", "image_name3"]
-    for image_name in image_names:
-        image_dir = os.path.dirname(request.params[image_name])
-        image_file = os.path.basename(request.params[image_name])
-        if image_file:  # //じゃなかった(ファイル名まである)
+    for canny_data in canny_data_list:
+        image_dir = os.path.dirname(canny_data["image_name"])
+        image_file = os.path.basename(canny_data["image_name"])
+        if image_file:  # ファイル名がちゃんと設定されていること
             regex_file = image_file.replace("#", "[0-9]")  # #は0-9として扱う
 
             # ファイルを全部確認
@@ -41,8 +41,6 @@ def canny():
     # Canny
     for file_path in image_files:
         img = cv2.imread(file_path)
-        minVal = int(max(0, (1.0 - 0.33) * 0.5))
-        maxVal = int(max(255, (1.0 + 0.33) * 0.5))
         new_img = cv2.Canny(img, threshold1=minVal, threshold2=maxVal)
 
         # 出力先に保存

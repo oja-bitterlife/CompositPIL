@@ -1,11 +1,12 @@
 import bpy
-import requests
-
+import requests, json
+from dataclasses import dataclass
 
 IMAGE_TYPES = (
     # id, view, desc
     ("BW", "BW", ""),
     ("RGB", "RGB", ""),
+    ("RGBA", "RGBA", ""),
     ("ALPHA", "ALPHA", ""),
     ("DEPTH", "DEPTH", ""),
 )
@@ -14,23 +15,41 @@ class CANNY_DATA(bpy.types.PropertyGroup):
     image_name: bpy.props.StringProperty(name="image name", default="//")
     image_type: bpy.props.EnumProperty(name = "image type", items=IMAGE_TYPES)
     alpha_threshold: bpy.props.FloatProperty(name = "alpha threshold", default=0.5, min=0, max=1)
-#adjacent/threshold
+    adjacent: bpy.props.IntProperty(name = "minVal", default=80, min=0, max=1000)
+    threshold: bpy.props.IntProperty(name = "maxVal", default=255, min=0, max=1000)
 
+    def toDict(self):
+        return {
+            "image_name": bpy.path.abspath(self.image_name),
+            "image_type": self.image_type,
+            "alpha_threshold": self.alpha_threshold,
+            "adjacent": self.adjacent,
+            "threshold": self.threshold,
+        }
 
 # Convert Canny
-class COMPOSIT_PIL_OT_send(bpy.types.Operator):
-    bl_idname = "composit_pil.send"
-    bl_label = "Run"
+# *****************************************************************************
+def run(context, canny_url, no):
+    data = {
+        "output_path": bpy.path.abspath(context.scene.canny_output_path),
+        "canny_data": context.scene.canny_data[no].toDict()
+    }
+
+    # リモート実行
+    response = requests.get(canny_url, params=data)
+    print(response.text)
+
+    return response
+
+class COMPOSIT_PIL_OT_run_all(bpy.types.Operator):
+    bl_idname = "composit_pil.run_all"
+    bl_label = "Run All"
 
     def execute(self, context):
-        # canny_url = "http://localhost:8080/canny"
-        # data = {
-        #     "output_path": bpy.path.abspath(context.scene.output_path),
-        #     "image_name_1": bpy.path.abspath(context.scene.canny[0].image_name),
-        #     "image_name_2": bpy.path.abspath(context.scene.canny[1].image_name),
-        #     "image_name_3": bpy.path.abspath(context.scene.canny[2].image_name),
-        # }
-        # response = requests.get(canny_url, params=data)
+        canny_url = "http://localhost:8080/canny"
+
+        for i in range(len(context.scene.canny_data)):
+            response = run(context, canny_url, i)
 
         # 自動更新
         if context.scene.canny_after_reload:
@@ -39,6 +58,24 @@ class COMPOSIT_PIL_OT_send(bpy.types.Operator):
 
         return{'FINISHED'}
 
+# 個別
+class COMPOSIT_PIL_OT_run(bpy.types.Operator):
+    bl_idname = "composit_pil.run"
+    bl_label = "Run"
+
+    id: bpy.props.IntProperty()
+
+    def execute(self, context):
+        canny_url = "http://localhost:8080/canny"
+
+        response = run(context, canny_url, self.id)
+
+        # 自動更新
+        if context.scene.canny_after_reload:
+            for image in bpy.data.images:
+                image.reload()
+
+        return{'FINISHED'}
 
 # Add/Remove
 # *****************************************************************************
@@ -57,7 +94,6 @@ class COMPOSIT_PIL_OT_remove(bpy.types.Operator):
     id: bpy.props.IntProperty()
 
     def execute(self, context):
-        print(self.id)
         context.scene.canny_data.remove(self.id)
         return{'FINISHED'}
 
@@ -66,25 +102,36 @@ class COMPOSIT_PIL_OT_remove(bpy.types.Operator):
 # *****************************************************************************
 def draw(self, context):
     self.layout.prop(context.scene, "output_path", text="OutputPath")
-    
+    self.layout.prop(context.scene, "canny_after_reload", text="Auto Reload")  # 実行後リロード
+
     box = self.layout.box()
-    box.label(text="Reference Images")
     box.operator("composit_pil.add")
 
     # 画像ごとの設定
     for i, canny_data in enumerate(context.scene.canny_data):
         img_box = box.box()
+
+        # 画像タイプ(Canny時の前処理が変わる)
         row = img_box.row().split(align=True, factor=0.9)
         row.prop(canny_data, "image_type", text="ImageType")
-        row.operator("composit_pil.remove", icon="PANEL_CLOSE").id = i
-        img_box.prop(canny_data, "image_name", text="ImageName")
-        if getattr(canny_data, "image_type") == "ALPHA":
+        row.operator("composit_pil.remove", icon="PANEL_CLOSE").id = i  # 閉じるボタンをつけておく
+        # alpha専用
+        if getattr(canny_data, "image_type") in ["ALPHA", "RGBA"]:
             img_box.prop(canny_data, "alpha_threshold", text="AlphaThreshold")
 
+        # 画像名(###が数字に置き換わる)
+        img_box.prop(canny_data, "image_name", text="ImageName")
 
-    # 実行ボタン
-    self.layout.prop(context.scene, "canny_after_reload", text="Auto Reload")
-    self.layout.operator("composit_pil.send")
+        # cannyのminVal/maxVal設定
+        row = img_box.row()
+        row.prop(canny_data, "adjacent", text="min")
+        row.prop(canny_data, "threshold", text="max")
+
+        # 実行ボタン
+        img_box.operator("composit_pil.run").id = i
+
+    # 全部実行ボタン
+    self.layout.operator("composit_pil.run_all")
 
 
 # register/unregister
