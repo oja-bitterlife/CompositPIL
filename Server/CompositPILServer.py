@@ -53,6 +53,11 @@ def canny_service():
     # *************************************************************************
     for file_path in image_files:
         img = cv2.imread(file_path, -1)
+        if img is None:  # ファイル読み込みチェック
+            print("file open failed: {:s}".format(file_path))
+            continue
+
+        canny_img = None  # Edgeイメージ格納先
 
         if canny_data["image_type"] == "BW" or canny_data["image_type"] == "DEPTH":
             canny_img = cv2.Canny(to_bw(img), threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
@@ -88,8 +93,17 @@ def canny_service():
                 # A無しで合成
                 canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r))
 
+        # 変換できなかった
+        if canny_img is None:
+            print("create image failed: {:s}".format(file_path))
+            continue
+
         # 出力先に保存
-        output_file_path = os.path.join(output_dir, os.path.basename(file_path))
+        fname, ext = os.path.splitext(os.path.basename(file_path))
+        if ext.upper() == ".PNG":
+            output_file_path = os.path.join(output_dir, fname) + ext
+        else:
+            output_file_path = os.path.join(output_dir, fname) + ".png"  # 必ずpngで出力
         cv2.imwrite(output_file_path, canny_img)
 
     response.headers['Cache-Control'] = 'no-cache'

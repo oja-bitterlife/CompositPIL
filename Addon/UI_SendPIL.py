@@ -12,7 +12,7 @@ CANNY_SERVER_URL = "http://localhost:{:d}/canny".format(SERVER_PORT)
 IMAGE_TYPES = (
     # id, view, desc
     ("BW", "BW", ""),
-    ("RGB", "RGB", ""),
+    ("RGB", "RGB", "AにRGBまとめた情報が入ります"),
     ("RGBA", "RGBA", ""),
     ("ALPHA", "ALPHA", ""),
     ("DEPTH", "DEPTH", ""),
