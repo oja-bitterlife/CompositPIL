@@ -61,7 +61,11 @@ def canny_service():
             canny_img_r = cv2.Canny(img_rgba[0], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
             canny_img_g = cv2.Canny(img_rgba[1], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
             canny_img_b = cv2.Canny(img_rgba[2], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
-            canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r))
+            # AにRGB全部まとめたものを
+            img_tmp = cv2.addWeighted(canny_img_r, 1, canny_img_g, 1, 0)
+            img_tmp = cv2.addWeighted(img_tmp, 1, canny_img_b, 1, 0)
+            # 合成
+            canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r, img_tmp))
         elif canny_data["image_type"] == "ALPHA":
             bw_img = to_bw(img)
             alpha_threshold = int(canny_data["alpha_threshold"] * 255)
