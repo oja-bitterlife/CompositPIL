@@ -1,41 +1,81 @@
 import bpy
 import requests
 
+
+IMAGE_TYPES = (
+    # id, view, desc
+    ("BW", "BW", ""),
+    ("RGB", "RGB", ""),
+    ("ALPHA", "ALPHA", ""),
+    ("DEPTH", "DEPTH", ""),
+)
+
+class CANNY_DATA(bpy.types.PropertyGroup):
+    image_name: bpy.props.StringProperty(name="image name", default="//")
+    image_type: bpy.props.EnumProperty(name = "image type", items=IMAGE_TYPES)
+    alpha_threshold: bpy.props.FloatProperty(name = "alpha threshold", default=0.5, min=0, max=1)
+
+
 class COMPOSIT_PIL_OT_send(bpy.types.Operator):
     bl_idname = "composit_pil.send"
     bl_label = "Run"
 
     def execute(self, context):
-        canny_url = "http://localhost:8080/canny"
-        data = {
-            "output_path": bpy.path.abspath(context.scene.output_path),
-            "image_name1": bpy.path.abspath(context.scene.image_name1),
-            "image_name2": bpy.path.abspath(context.scene.image_name2),
-            "image_name3": bpy.path.abspath(context.scene.image_name3),
-        }
-        response = requests.get(canny_url, params=data)
+        # canny_url = "http://localhost:8080/canny"
+        # data = {
+        #     "output_path": bpy.path.abspath(context.scene.output_path),
+        #     "image_name_1": bpy.path.abspath(context.scene.canny[0].image_name),
+        #     "image_name_2": bpy.path.abspath(context.scene.canny[1].image_name),
+        #     "image_name_3": bpy.path.abspath(context.scene.canny[2].image_name),
+        # }
+        # response = requests.get(canny_url, params=data)
 
         # for image in bpy.data.images:
         #     image.reload()
-        print(response.json())
         return{'FINISHED'}
+
+class COMPOSIT_PIL_OT_remove(bpy.types.Operator):
+    bl_idname = "composit_pil.remove"
+    bl_label = ""
+
+    id: bpy.props.IntProperty()
+
+    def execute(self, context):
+        print(self.id)
+        return{'FINISHED'}
+
+
 
 def draw(self, context):
     self.layout.prop(context.scene, "output_path", text="OutputPath")
     
     box = self.layout.box()
     box.label(text="Reference Images")
-    box.prop(context.scene, "image_name1", text="Image1")
-    box.prop(context.scene, "image_name2", text="Image2")
-    box.prop(context.scene, "image_name3", text="Image3")
 
+    # とりあえず3つ用意
+    if len(context.scene.canny_data) == 0:
+        for i in range(3):
+            context.scene.canny_data.add()
+
+    # 画像ごとの設定
+    for i, canny_data in enumerate(context.scene.canny_data):
+        img_box = box.box()
+        row = img_box.row().split(align=True, factor=0.9)
+        row.prop(canny_data, "image_type", text="ImageType")
+        row.operator("composit_pil.remove", icon="PANEL_CLOSE").id = i
+        img_box.prop(canny_data, "image_name", text="ImageName")
+        if getattr(canny_data, "image_type") == "ALPHA":
+            img_box.prop(canny_data, "alpha_threshold", text="AlphaThreshold")
+
+
+    # 実行ボタン
     self.layout.operator("composit_pil.send")
+
+#adjacent
 
 def register():
     bpy.types.Scene.output_path = bpy.props.StringProperty(name="output path", default="//")
-    bpy.types.Scene.image_name1 = bpy.props.StringProperty(name="image name", default="//")
-    bpy.types.Scene.image_name2 = bpy.props.StringProperty(name="image name", default="//")
-    bpy.types.Scene.image_name3 = bpy.props.StringProperty(name="image name", default="//")
+    bpy.types.Scene.canny_data = bpy.props.CollectionProperty(type=CANNY_DATA)
 
 def unregister():
     pass
