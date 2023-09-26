@@ -52,7 +52,7 @@ def canny_service():
     for file_path in image_files:
         img = cv2.imread(file_path, -1)
 
-        if canny_data["image_type"] == "BW":
+        if canny_data["image_type"] == "BW" or canny_data["image_type"] == "DEPTH":
             canny_img = cv2.Canny(to_bw(img), threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
         elif canny_data["image_type"] == "RGB":
             img_rgba = cv2.split(img)
@@ -72,11 +72,15 @@ def canny_service():
             canny_img_g = cv2.Canny(img_rgba[1], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
             canny_img_b = cv2.Canny(img_rgba[2], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
             # A部分
-            alpha_threshold = int(canny_data["alpha_threshold"] * 255)
-            _, bin_img = cv2.threshold(img_rgba[3], alpha_threshold, 255, cv2.THRESH_BINARY)
-            canny_img_a = cv2.Canny(bin_img, threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
-            # 合成
-            canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r, canny_img_a))
+            if len(img_rgba) >= 4:
+                alpha_threshold = int(canny_data["alpha_threshold"] * 255)
+                _, bin_img = cv2.threshold(img_rgba[3], alpha_threshold, 255, cv2.THRESH_BINARY)
+                canny_img_a = cv2.Canny(bin_img, threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
+                # 合成
+                canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r, canny_img_a))
+            else:
+                # Aナシで合成
+                canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r))
 
         # 出力先に保存
         output_file_path = os.path.join(output_dir, os.path.basename(file_path))
