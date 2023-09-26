@@ -12,10 +12,10 @@ CANNY_SERVER_URL = "http://localhost:{:d}/canny".format(SERVER_PORT)
 IMAGE_TYPES = (
     # id, view, desc
     ("BW", "BW", ""),
-    ("RGB", "RGB", "AにRGBまとめた情報が入ります"),
+    ("RGB", "RGB", "AにRGBの結果をまとめてます"),
     ("RGBA", "RGBA", ""),
-    ("ALPHA", "ALPHA", ""),
-    ("DEPTH", "DEPTH", ""),
+    ("ALPHA", "ALPHA", "Aがあれば使い無ければGrayScaleを使います"),
+    ("DEPTH", "DEPTH", "BWと同じ"),
 )
 
 class CANNY_DATA(bpy.types.PropertyGroup):

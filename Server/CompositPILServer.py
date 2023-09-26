@@ -72,7 +72,12 @@ def canny_service():
             # 合成
             canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r, img_tmp))
         elif canny_data["image_type"] == "ALPHA":
-            bw_img = to_bw(img)
+            img_rgba = cv2.split(img)
+            if len(img_rgba) >= 4:  # アルファを使う
+                bw_img = img_rgba[3]
+            else:  # グレースケールで扱う
+                bw_img = to_bw(img)
+            # 二値化
             alpha_threshold = int(canny_data["alpha_threshold"] * 255)
             _, bin_img = cv2.threshold(bw_img, alpha_threshold, 255, cv2.THRESH_BINARY)
             canny_img = cv2.Canny(bin_img, threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
