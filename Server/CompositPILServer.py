@@ -2,8 +2,10 @@ from bottle import Bottle, run, request, response
 import re, os, os.path, json
 import cv2
 
-app = Bottle()
+# DEFINE
+SERVER_PORT = 8080
 
+app = Bottle()
 
 # Utility
 # *****************************************************************************
@@ -95,4 +97,4 @@ def hello():
     return "hello!"
 
 # Server
-run(app, host='localhost', port=8080, reloader=True)
+run(app, host='localhost', port=SERVER_PORT, reloader=True)
