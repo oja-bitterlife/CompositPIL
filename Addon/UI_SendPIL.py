@@ -1,6 +1,6 @@
 import bpy
 import requests, json
-from dataclasses import dataclass
+from urllib.parse import urlencode
 
 IMAGE_TYPES = (
     # id, view, desc
@@ -18,21 +18,21 @@ class CANNY_DATA(bpy.types.PropertyGroup):
     adjacent: bpy.props.IntProperty(name = "minVal", default=80, min=0, max=1000)
     threshold: bpy.props.IntProperty(name = "maxVal", default=255, min=0, max=1000)
 
-    def toDict(self):
-        return {
+    def toJSON(self):
+        return json.dumps({
             "image_name": bpy.path.abspath(self.image_name),
             "image_type": self.image_type,
             "alpha_threshold": self.alpha_threshold,
             "adjacent": self.adjacent,
             "threshold": self.threshold,
-        }
+        })
 
 # Convert Canny
 # *****************************************************************************
 def run(context, canny_url, no):
     data = {
         "output_path": bpy.path.abspath(context.scene.canny_output_path),
-        "canny_data": context.scene.canny_data[no].toDict()
+        "canny_data": context.scene.canny_data[no].toJSON()
     }
 
     # リモート実行
@@ -101,7 +101,7 @@ class COMPOSIT_PIL_OT_remove(bpy.types.Operator):
 # draw UI
 # *****************************************************************************
 def draw(self, context):
-    self.layout.prop(context.scene, "output_path", text="OutputPath")
+    self.layout.prop(context.scene, "canny_output_path", text="Output Path")
     self.layout.prop(context.scene, "canny_after_reload", text="Auto Reload")  # 実行後リロード
 
     box = self.layout.box()
@@ -113,14 +113,14 @@ def draw(self, context):
 
         # 画像タイプ(Canny時の前処理が変わる)
         row = img_box.row().split(align=True, factor=0.9)
-        row.prop(canny_data, "image_type", text="ImageType")
+        row.prop(canny_data, "image_type", text="Image Type")
         row.operator("composit_pil.remove", icon="PANEL_CLOSE").id = i  # 閉じるボタンをつけておく
         # alpha専用
         if getattr(canny_data, "image_type") in ["ALPHA", "RGBA"]:
-            img_box.prop(canny_data, "alpha_threshold", text="AlphaThreshold")
+            img_box.prop(canny_data, "alpha_threshold", text="Alpha Threshold")
 
         # 画像名(###が数字に置き換わる)
-        img_box.prop(canny_data, "image_name", text="ImageName")
+        img_box.prop(canny_data, "image_name", text="Image Name")
 
         # cannyのminVal/maxVal設定
         row = img_box.row()
