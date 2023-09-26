@@ -2,6 +2,13 @@ import bpy
 import requests, json
 from urllib.parse import urlencode
 
+# DEFINE
+SERVER_PORT = 8080
+CANNY_SERVER_URL = "http://localhost:{:d}/canny".format(SERVER_PORT)
+
+
+# Data Structure
+# *****************************************************************************
 IMAGE_TYPES = (
     # id, view, desc
     ("BW", "BW", ""),
@@ -27,6 +34,7 @@ class CANNY_DATA(bpy.types.PropertyGroup):
             "threshold": self.threshold,
         })
 
+
 # Convert Canny
 # *****************************************************************************
 def run(context, canny_url, no):
@@ -46,10 +54,9 @@ class COMPOSIT_PIL_OT_run_all(bpy.types.Operator):
     bl_label = "Run All"
 
     def execute(self, context):
-        canny_url = "http://localhost:8080/canny"
 
         for i in range(len(context.scene.canny_data)):
-            response = run(context, canny_url, i)
+            response = run(context, CANNY_SERVER_URL, i)
 
         # 自動更新
         if context.scene.canny_after_reload:
@@ -66,9 +73,7 @@ class COMPOSIT_PIL_OT_run(bpy.types.Operator):
     id: bpy.props.IntProperty()
 
     def execute(self, context):
-        canny_url = "http://localhost:8080/canny"
-
-        response = run(context, canny_url, self.id)
+        response = run(context, CANNY_SERVER_URL, self.id)
 
         # 自動更新
         if context.scene.canny_after_reload:
