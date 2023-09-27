@@ -31,6 +31,7 @@ class CANNY_DATA(bpy.types.PropertyGroup):
     alpha_threshold: bpy.props.FloatProperty(name = "alpha threshold", default=0.5, min=0, max=1)
     adjacent: bpy.props.IntProperty(name = "minVal", default=80, min=0, max=1000)
     threshold: bpy.props.IntProperty(name = "maxVal", default=255, min=0, max=1000)
+    output_prefix: bpy.props.StringProperty(name="output prefix")
 
     def toJSON(self):
         return json.dumps({
@@ -39,6 +40,7 @@ class CANNY_DATA(bpy.types.PropertyGroup):
             "alpha_threshold": self.alpha_threshold,
             "adjacent": self.adjacent,
             "threshold": self.threshold,
+            "output_prefix": self.output_prefix,
         })
 
 
@@ -114,8 +116,9 @@ class COMPOSIT_PIL_OT_remove(bpy.types.Operator):
 # draw UI
 # *****************************************************************************
 def draw(self, context):
-    self.layout.prop(context.scene, "canny_output_path", text="Output Path")
-    self.layout.prop(context.scene, "canny_scale_type", text="Scale Type")
+    self.layout.prop(context.scene, "canny_output_path", text="Output Path")  # 出力パス
+
+    self.layout.prop(context.scene, "canny_scale_type", text="Scale Type")  # 事前拡大モード
     self.layout.prop(context.scene, "canny_after_reload", text="Auto Reload")  # 実行後リロード
 
     box = self.layout.box()
@@ -140,6 +143,9 @@ def draw(self, context):
         row = img_box.row()
         row.prop(canny_data, "adjacent", text="min")
         row.prop(canny_data, "threshold", text="max")
+
+        # 生成ファイルのprefix設定
+        img_box.prop(canny_data, "output_prefix", text="Output Prefix")
 
         # 実行ボタン
         img_box.operator("composit_pil.run").id = i

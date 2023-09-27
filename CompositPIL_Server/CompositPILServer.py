@@ -127,11 +127,12 @@ def canny_service():
 
         # 出力先に保存
         # -------------------------------------------------
+        print(canny_data)
         fname, ext = os.path.splitext(os.path.basename(file_path))
         if ext.upper() == ".PNG":
-            output_file_path = os.path.join(output_dir, fname) + ext
+            output_file_path = os.path.join(output_dir, canny_data["output_prefix"] + fname) + ext
         else:
-            output_file_path = os.path.join(output_dir, fname) + ".png"  # 必ずpngで出力
+            output_file_path = os.path.join(output_dir, canny_data["output_prefix"] + fname) + ".png"  # 必ずpngで出力
         cv2.imwrite(output_file_path, canny_img)
 
 
