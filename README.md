@@ -36,7 +36,7 @@ BlenderのフィルタにCannyがないので、じゃぁCanny用の画像を保
 
 この中にCompositPIL_AddonというフォルダがあるのでZIP圧縮してCompositPIL_Addon.zipというzipファイルを作ってください。
 
-この作ったzipファイルがBlenderのAddonとしてInstallできるものとなります。
+この作ったzipファイルがBlenderのAddonとしてInstallできるものとなります。後は通常のAddonのインストール手順です(PreferenceのAddon管理画面からinstall)
 
 ### Pythonの準備
 Python3の実行環境を必要とします。たぶんAnacondaでも大丈夫……かなあ?
