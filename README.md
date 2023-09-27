@@ -38,8 +38,7 @@ pip install -r requirements.txt
 ```
 
 ### サーバ起動
-常に起動する必要はありません。
-Cannyアドオンの実行ボタンを押す直前で起動すれば十分です。
+常に起動する必要はありません。CompositPILアドオンの実行ボタンを押す直前で起動すれば十分です。
 
 CompositPIL_mainを解凍したフォルダ内にCompositPIL_Serverというフォルダがあります。
 このフォルダの中で次のコマンドを打つと起動します。
