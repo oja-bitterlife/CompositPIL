@@ -22,7 +22,7 @@ SCALE_TYPES = (
     # id, view, desc
     ("None", "None", "そのままのサイズで変換"),
     ("x2c-up", "x2(Bicubic)", "拡大した画像で変換し出力"),
-    ("x2c-down", "x2(Bicubic) -> x0.5(BiCubic)", "拡大して変換後元のサイズで出力"),
+    ("x2c-down", "x2(Bicubic) -> x0.5(Bicubic)", "拡大して変換後元のサイズで出力"),
 )
 
 class CANNY_DATA(bpy.types.PropertyGroup):
