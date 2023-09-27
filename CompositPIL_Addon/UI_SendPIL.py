@@ -13,9 +13,7 @@ IMAGE_TYPES = (
     # id, view, desc
     ("BW", "BW", "GlayScale"),
     ("RGB", "RGB", "RGB各チャンネルで実行。AはRGBの合成結果"),
-    ("RGBA", "RGBA", "RGBモードとALPHAモードを実行"),
     ("ALPHA", "ALPHA", "Aがあれば使い無ければGrayScaleを使います"),
-    ("DEPTH", "DEPTH", "BWと同じ"),
 )
 
 SCALE_TYPES = (

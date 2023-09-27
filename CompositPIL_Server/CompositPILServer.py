@@ -73,7 +73,7 @@ def canny_service():
         # -------------------------------------------------
         canny_img = None  # Edgeイメージ格納先
 
-        if canny_data["image_type"] == "BW" or canny_data["image_type"] == "DEPTH":
+        if canny_data["image_type"] == "BW":
             canny_img = cv2.Canny(to_bw(img), threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
 
         elif canny_data["image_type"] == "RGB":
@@ -97,23 +97,6 @@ def canny_service():
             alpha_threshold = int(canny_data["alpha_threshold"] * 255)
             _, bin_img = cv2.threshold(bw_img, alpha_threshold, 255, cv2.THRESH_BINARY)
             canny_img = cv2.Canny(bin_img, threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
-
-        elif canny_data["image_type"] == "RGBA":
-            img_rgba = cv2.split(img)
-            # RGB部分
-            canny_img_r = cv2.Canny(img_rgba[0], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
-            canny_img_g = cv2.Canny(img_rgba[1], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
-            canny_img_b = cv2.Canny(img_rgba[2], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
-            # A部分
-            if len(img_rgba) >= 4:
-                alpha_threshold = int(canny_data["alpha_threshold"] * 255)
-                _, bin_img = cv2.threshold(img_rgba[3], alpha_threshold, 255, cv2.THRESH_BINARY)
-                canny_img_a = cv2.Canny(bin_img, threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
-                # 合成
-                canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r, canny_img_a))
-            else:
-                # A無しで合成
-                canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r))
 
         # 変換できなかった
         if canny_img is None:
