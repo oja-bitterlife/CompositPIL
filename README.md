@@ -3,9 +3,11 @@
 BlenderのフィルタにCannyがないので、じゃぁCanny用の画像を保存しておいてBlenderの外でCannyで線画だせばいいじゃない。
 
 というわけでOpenCVでCannyでエッジ検出をしてファイルに出力するアプリです。
+
 <img src="readme_img/senga.png" height="300">
 
 こんな感じに合成できます
+
 <img src="readme_img/ss.png" height="300">
 
 
