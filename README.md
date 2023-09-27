@@ -64,6 +64,9 @@ Listening on http://localhost:8080/
 Hit Ctrl-C to quit
 ```
 
+一応起動用のserver-run.batもつけておきました。たぶんこれダブルクリックするだけで動くと思われ。
+
+
 ### 使い方
 一旦エッジ検出に使う画像ファイルを普通にレンダリングして保存してください。
 
