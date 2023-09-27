@@ -22,6 +22,8 @@ def to_bw(img):
 def canny_service():
     # 出力先
     output_dir = request.params["output_path"]
+    # Scale
+    scale_type = request.params["scale_type"]
     # 変換パラメータ
     canny_data = json.loads(request.params["canny_data"])
 
@@ -60,6 +62,10 @@ def canny_service():
         if img is None:  # ファイル読み込みチェック
             print("file open failed: {:s}".format(file_path))
             continue
+
+        # ついでに拡大
+        if scale_type == "x2cubic":
+            img = cv2.resize(img, None, None, 2, 2, cv2.INTER_CUBIC)
 
 
         # Canny Convert
@@ -112,6 +118,10 @@ def canny_service():
         if canny_img is None:
             print("create image failed: {:s}".format(file_path))
             continue
+
+        # 拡大したので縮小
+        if scale_type == "x2cubic":
+            canny_img = cv2.resize(canny_img, None, None, 0.5, 0.5, cv2.INTER_CUBIC)
 
 
         # 出力先に保存

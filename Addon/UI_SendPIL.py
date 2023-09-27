@@ -18,6 +18,12 @@ IMAGE_TYPES = (
     ("DEPTH", "DEPTH", "BWと同じ"),
 )
 
+SCALE_TYPES = (
+    # id, view, desc
+    ("None", "None", ""),
+    ("x2cubic", "x2(Bicubic)", ""),
+)
+
 class CANNY_DATA(bpy.types.PropertyGroup):
     image_name: bpy.props.StringProperty(name="image name", default="//")
     image_type: bpy.props.EnumProperty(name = "image type", items=IMAGE_TYPES)
@@ -40,6 +46,7 @@ class CANNY_DATA(bpy.types.PropertyGroup):
 def run(context, canny_url, no):
     data = {
         "output_path": bpy.path.abspath(context.scene.canny_output_path),
+        "scale_type": context.scene.canny_scale_type,
         "canny_data": context.scene.canny_data[no].toJSON()
     }
 
@@ -107,6 +114,7 @@ class COMPOSIT_PIL_OT_remove(bpy.types.Operator):
 # *****************************************************************************
 def draw(self, context):
     self.layout.prop(context.scene, "canny_output_path", text="Output Path")
+    self.layout.prop(context.scene, "canny_scale_type", text="Scale Type")
     self.layout.prop(context.scene, "canny_after_reload", text="Auto Reload")  # 実行後リロード
 
     box = self.layout.box()
@@ -145,6 +153,7 @@ def register():
     bpy.types.Scene.canny_output_path = bpy.props.StringProperty(name="output path", default="//canny_edge")
     bpy.types.Scene.canny_data = bpy.props.CollectionProperty(type=CANNY_DATA)
     bpy.types.Scene.canny_after_reload = bpy.props.BoolProperty(name="after reload", default=True)
+    bpy.types.Scene.canny_scale_type = bpy.props.EnumProperty(name = "image type", items=SCALE_TYPES)
 
 def unregister():
     pass
