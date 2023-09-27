@@ -55,8 +55,7 @@ CompositPIL_mainを解凍したフォルダ内にCompositPIL_Serverというフ�
 python CompositPILServer.py
 ```
 
-次のような出力の後停止したらサーバの起動完了です。
-メッセージの通り停止はCtrl+Cです。
+次のような出力の後待機状態になったらサーバの起動完了です。メッセージの通り停止はCtrl+Cです。
 
 ```shell
 Bottle v0.13-dev server starting up (using WSGIRefServer())...
