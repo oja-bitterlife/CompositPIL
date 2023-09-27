@@ -32,6 +32,8 @@ BlenderのフィルタにCannyがないので、じゃぁCanny用の画像を保
 ### Addonのインストール
 まずはGithubリポジトリのCodeからZIPをDownloadしてください。CompositPIL_main.zipというファイルが取得できるので解凍しておいてください。
 
+<img src="readme_img/github-code.png" height="300">
+
 この中にCompositPIL_AddonというフォルダがあるのでZIP圧縮してCompositPIL_Addon.zipというzipファイルを作ってください。
 
 この作ったzipファイルがBlenderのAddonとしてInstallできるものとなります。
