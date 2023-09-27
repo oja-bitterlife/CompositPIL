@@ -25,6 +25,7 @@ def canny_service():
     # 変換パラメータ
     canny_data = json.loads(request.params["canny_data"])
 
+
     # 対象ファイルの検出
     # *************************************************************************
     image_files = set([])  # 見つけたファイル記録場所
@@ -49,18 +50,25 @@ def canny_service():
     if not os.path.exists(output_dir) and len(image_files) > 0:
         os.mkdir(output_dir)
 
-    # Canny Convert
+
+    # Convert
     # *************************************************************************
     for file_path in image_files:
-        img = cv2.imread(file_path, -1)
+        # 変換元画像読み込み
+        # -------------------------------------------------
+        img = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
         if img is None:  # ファイル読み込みチェック
             print("file open failed: {:s}".format(file_path))
             continue
 
+
+        # Canny Convert
+        # -------------------------------------------------
         canny_img = None  # Edgeイメージ格納先
 
         if canny_data["image_type"] == "BW" or canny_data["image_type"] == "DEPTH":
             canny_img = cv2.Canny(to_bw(img), threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
+
         elif canny_data["image_type"] == "RGB":
             img_rgba = cv2.split(img)
             canny_img_r = cv2.Canny(img_rgba[0], threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
@@ -71,6 +79,7 @@ def canny_service():
             img_tmp = cv2.addWeighted(img_tmp, 1, canny_img_b, 1, 0)
             # 合成
             canny_img = cv2.merge((canny_img_b, canny_img_g, canny_img_r, img_tmp))
+
         elif canny_data["image_type"] == "ALPHA":
             img_rgba = cv2.split(img)
             if len(img_rgba) >= 4:  # アルファを使う
@@ -81,6 +90,7 @@ def canny_service():
             alpha_threshold = int(canny_data["alpha_threshold"] * 255)
             _, bin_img = cv2.threshold(bw_img, alpha_threshold, 255, cv2.THRESH_BINARY)
             canny_img = cv2.Canny(bin_img, threshold1=canny_data["adjacent"], threshold2=canny_data["threshold"])
+
         elif canny_data["image_type"] == "RGBA":
             img_rgba = cv2.split(img)
             # RGB部分
@@ -103,7 +113,9 @@ def canny_service():
             print("create image failed: {:s}".format(file_path))
             continue
 
+
         # 出力先に保存
+        # -------------------------------------------------
         fname, ext = os.path.splitext(os.path.basename(file_path))
         if ext.upper() == ".PNG":
             output_file_path = os.path.join(output_dir, fname) + ext
@@ -111,13 +123,18 @@ def canny_service():
             output_file_path = os.path.join(output_dir, fname) + ".png"  # 必ずpngで出力
         cv2.imwrite(output_file_path, canny_img)
 
+
+    # 終了
+    # *************************************************************************
     response.headers['Cache-Control'] = 'no-cache'
     return {'result':"Complete"}
 
 
+
+# Server
+# *****************************************************************************
 @app.route('/')
 def hello():
     return "hello!"
 
-# Server
 run(app, host='localhost', port=SERVER_PORT, reloader=True)
