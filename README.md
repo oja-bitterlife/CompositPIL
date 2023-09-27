@@ -65,6 +65,11 @@ Hit Ctrl-C to quit
 
 一応起動用のserver-run.batもつけておきました。たぶんこれダブルクリックするだけで動くと思われ。
 
+#### PORT変更
+CompositPILServer.pyファイルの先頭付近にPORT番号があるので書き換えてください
+```python
+SERVER_PORT = 8080
+```
 
 ### 使い方
 一旦エッジ検出に使う画像ファイルを普通にレンダリングして保存してください。
