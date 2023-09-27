@@ -62,10 +62,11 @@ def canny_service():
         if img is None:  # ファイル読み込みチェック
             print("file open failed: {:s}".format(file_path))
             continue
+        img_shape = img.shape
 
         # ついでに拡大
-        if scale_type == "x2cubic":
-            img = cv2.resize(img, None, None, 2, 2, cv2.INTER_CUBIC)
+        if scale_type == "x2c-up" or scale_type == "x2c-down":
+            img = cv2.resize(img, (img_shape[1]*2, img_shape[0]*2), interpolation=cv2.INTER_CUBIC)
 
 
         # Canny Convert
@@ -120,8 +121,8 @@ def canny_service():
             continue
 
         # 拡大したので縮小
-        if scale_type == "x2cubic":
-            canny_img = cv2.resize(canny_img, None, None, 0.5, 0.5, cv2.INTER_CUBIC)
+        if scale_type == "x2c-down":
+            canny_img = cv2.resize(canny_img, (img_shape[1], img_shape[0]), interpolation=cv2.INTER_CUBIC)
 
 
         # 出力先に保存

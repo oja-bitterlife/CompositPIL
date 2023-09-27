@@ -11,17 +11,18 @@ CANNY_SERVER_URL = "http://localhost:{:d}/canny".format(SERVER_PORT)
 # *****************************************************************************
 IMAGE_TYPES = (
     # id, view, desc
-    ("BW", "BW", ""),
-    ("RGB", "RGB", "AにRGBの結果をまとめてます"),
-    ("RGBA", "RGBA", ""),
+    ("BW", "BW", "GlayScale"),
+    ("RGB", "RGB", "RGB各チャンネルで実行。AはRGBの合成結果"),
+    ("RGBA", "RGBA", "RGBモードとALPHAモードを実行"),
     ("ALPHA", "ALPHA", "Aがあれば使い無ければGrayScaleを使います"),
     ("DEPTH", "DEPTH", "BWと同じ"),
 )
 
 SCALE_TYPES = (
     # id, view, desc
-    ("None", "None", ""),
-    ("x2cubic", "x2(Bicubic)", ""),
+    ("None", "None", "そのままのサイズで変換"),
+    ("x2c-up", "x2(Bicubic)", "拡大した画像で変換し出力"),
+    ("x2c-down", "x2(Bicubic) -> x0.5(BiCubic)", "拡大して変換後元のサイズで出力"),
 )
 
 class CANNY_DATA(bpy.types.PropertyGroup):
@@ -153,7 +154,7 @@ def register():
     bpy.types.Scene.canny_output_path = bpy.props.StringProperty(name="output path", default="//canny_edge")
     bpy.types.Scene.canny_data = bpy.props.CollectionProperty(type=CANNY_DATA)
     bpy.types.Scene.canny_after_reload = bpy.props.BoolProperty(name="after reload", default=True)
-    bpy.types.Scene.canny_scale_type = bpy.props.EnumProperty(name = "image type", items=SCALE_TYPES)
+    bpy.types.Scene.canny_scale_type = bpy.props.EnumProperty(name = "image type", items=SCALE_TYPES, default="x2c-down")
 
 def unregister():
     pass
