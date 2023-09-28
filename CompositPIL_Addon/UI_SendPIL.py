@@ -90,6 +90,7 @@ class COMPOSIT_PIL_OT_run(bpy.types.Operator):
 
         return{'FINISHED'}
 
+
 # Add/Remove/move
 # *****************************************************************************
 class COMPOSIT_PIL_OT_add(bpy.types.Operator):
@@ -131,7 +132,6 @@ class COMPOSIT_PIL_OT_movedown(bpy.types.Operator):
         if self.id < len(context.scene.canny_data)-1:
             context.scene.canny_data.move(self.id, self.id+1)
         return{'FINISHED'}
-
 
 
 # draw UI
@@ -177,8 +177,11 @@ def draw(self, context):
         img_box.operator("composit_pil.run").id = i
 
     # サーバポート指定
-    row = self.layout.box().row().split(align=True, factor=0.2)
-    row.prop(context.scene, "canny_server_port_lock", text="Lock")  # 実行後リロード
+    row = self.layout.box().row().split(align=True, factor=0.1)
+    if context.scene.canny_server_port_lock:
+        row.prop(context.scene, "canny_server_port_lock", icon="LOCKED", text="")
+    else:
+        row.prop(context.scene, "canny_server_port_lock", icon="UNLOCKED", text="")
     row_child = row.row()
     if context.scene.canny_server_port_lock:
         row_child.enabled = False
