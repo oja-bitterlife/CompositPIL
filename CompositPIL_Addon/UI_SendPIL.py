@@ -90,7 +90,7 @@ class COMPOSIT_PIL_OT_run(bpy.types.Operator):
 
         return{'FINISHED'}
 
-# Add/Remove
+# Add/Remove/move
 # *****************************************************************************
 class COMPOSIT_PIL_OT_add(bpy.types.Operator):
     bl_idname = "composit_pil.add"
@@ -110,6 +110,29 @@ class COMPOSIT_PIL_OT_remove(bpy.types.Operator):
         context.scene.canny_data.remove(self.id)
         return{'FINISHED'}
 
+class COMPOSIT_PIL_OT_moveup(bpy.types.Operator):
+    bl_idname = "composit_pil.moveup"
+    bl_label = ""
+
+    id: bpy.props.IntProperty()
+
+    def execute(self, context):
+        if self.id > 0:
+            context.scene.canny_data.move(self.id-1, self.id)
+        return{'FINISHED'}
+
+class COMPOSIT_PIL_OT_movedown(bpy.types.Operator):
+    bl_idname = "composit_pil.movedown"
+    bl_label = ""
+
+    id: bpy.props.IntProperty()
+
+    def execute(self, context):
+        if self.id < len(context.scene.canny_data)-1:
+            context.scene.canny_data.move(self.id, self.id+1)
+        return{'FINISHED'}
+
+
 
 # draw UI
 # *****************************************************************************
@@ -127,9 +150,14 @@ def draw(self, context):
         img_box = box.box()
 
         # 画像タイプ(Canny時の前処理が変わる)
-        row = img_box.row().split(align=True, factor=0.9)
+        row = img_box.row().split(align=True, factor=0.75)
         row.prop(canny_data, "image_type", text="Image Type")
-        row.operator("composit_pil.remove", icon="PANEL_CLOSE").id = i  # 閉じるボタンをつけておく
+
+        # 上下閉じるボタン
+        row.operator("composit_pil.moveup", icon="TRIA_UP").id = i
+        row.operator("composit_pil.movedown", icon="TRIA_DOWN").id = i
+        row.operator("composit_pil.remove", icon="PANEL_CLOSE").id = i
+
         # alpha専用
         if getattr(canny_data, "image_type") in ["ALPHA", "RGBA"]:
             img_box.prop(canny_data, "alpha_threshold", text="Alpha Threshold")
