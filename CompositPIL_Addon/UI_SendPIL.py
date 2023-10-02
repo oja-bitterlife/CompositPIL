@@ -210,7 +210,7 @@ def import_resource(self):
     script_file = os.path.realpath(__file__)
     resource_file = os.path.join(os.path.dirname(script_file), "resource", "resource.blend")
 
-    with bpy.data.libraries.load(resource_file, link=False) as (data_from, data_to):
+    with bpy.data.libraries.load(resource_file, link=False, relative=True) as (data_from, data_to):
         for ng in data_from.node_groups:
             if bpy.data.node_groups.get(ng):
                 continue
