@@ -197,28 +197,6 @@ def draw(self, context):
 
 # register/unregister
 # *****************************************************************************
-@persistent
-def import_resource(self):
-    # 高速化のため個別指定
-    target_ng = ["OjaNPR2023.7", "OjaCOMPIL_Normal"]
-
-    # すでに全部読み込んであれば何もしない
-    if all([bpy.data.node_groups.get(ng) != None for ng in target_ng]):
-        return
-
-    # データ転送
-    script_file = os.path.realpath(__file__)
-    resource_file = os.path.join(os.path.dirname(script_file), "resource", "resource.blend")
-
-    with bpy.data.libraries.load(resource_file, link=False, relative=True) as (data_from, data_to):
-        for ng in data_from.node_groups:
-            if bpy.data.node_groups.get(ng):
-                continue
-            else:
-                data_to.node_groups.append(ng)
-                print("append:", ng)
-
-
 def register():
     bpy.types.Scene.canny_output_path = bpy.props.StringProperty(name="output path", default="//canny_edge")
     bpy.types.Scene.canny_data = bpy.props.CollectionProperty(type=CANNY_DATA)
@@ -228,8 +206,5 @@ def register():
     bpy.types.Scene.canny_server_port_lock = bpy.props.BoolProperty(name="server port lock", default=True)
     bpy.types.Scene.canny_server_port = bpy.props.IntProperty(name="server port", default=8080, min=0, max=65535)
 
-    # リソース読み込み
-    bpy.app.handlers.load_post.append(import_resource)
-
 def unregister():
-    bpy.app.handlers.load_post.remove(import_resource)
+    pass
