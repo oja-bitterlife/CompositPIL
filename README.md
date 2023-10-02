@@ -39,7 +39,7 @@ BlenderのフィルタにCannyがないので、じゃぁCanny用の画像を保
 
 この作ったzipファイルがBlenderのAddonとしてInstallできるものとなります。後は通常のAddonのインストール手順です(PreferenceのAddon管理画面からinstall)
 
-おまけグループを使うときはBlenderの再起動をしてください(´・ω:;.:... 
+おまけノードグループを使うときはBlenderの再起動をしてください(´・ω:;.:... 
 
 ### Pythonの準備
 Python3の実行環境を必要とします。たぶんAnacondaでも大丈夫……かなあ?
