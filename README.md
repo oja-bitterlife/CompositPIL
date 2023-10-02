@@ -10,6 +10,7 @@ BlenderのフィルタにCannyがないので、じゃぁCanny用の画像を保
 
 <img src="readme_img/ss.png" height="300">
 
+ついでに自分が使ってるNPR用のマテリアルグループとCompositingグループもおまけで登録するようにしておきました。
 
 ## 注意事項(重要)
 このアプリはお使いのPCにアプリ用サーバを起動します。
@@ -37,6 +38,8 @@ BlenderのフィルタにCannyがないので、じゃぁCanny用の画像を保
 この中にCompositPIL_AddonというフォルダがあるのでZIP圧縮してCompositPIL_Addon.zipというzipファイルを作ってください。
 
 この作ったzipファイルがBlenderのAddonとしてInstallできるものとなります。後は通常のAddonのインストール手順です(PreferenceのAddon管理画面からinstall)
+
+おまけグループを使うときはBlenderの再起動をしてください(´・ω:;.:... 
 
 ### Pythonの準備
 Python3の実行環境を必要とします。たぶんAnacondaでも大丈夫……かなあ?

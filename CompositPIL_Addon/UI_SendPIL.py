@@ -1,6 +1,9 @@
 import bpy
+import os.path
 import requests, json
 from urllib.parse import urlencode
+from bpy.app.handlers import persistent
+
 
 # DEFINE
 SERVER_PORT = 8080
@@ -72,6 +75,7 @@ class COMPOSIT_PIL_OT_run_all(bpy.types.Operator):
                 image.reload()
 
         return{'FINISHED'}
+
 
 # 個別
 class COMPOSIT_PIL_OT_run(bpy.types.Operator):
@@ -193,6 +197,28 @@ def draw(self, context):
 
 # register/unregister
 # *****************************************************************************
+@persistent
+def import_resource(self):
+    # 高速化のため個別指定
+    target_ng = ["OjaNPR2023.7", "OjaCOMPIL_Normal"]
+
+    # すでに全部読み込んであれば何もしない
+    if all([bpy.data.node_groups.get(ng) != None for ng in target_ng]):
+        return
+
+    # データ転送
+    script_file = os.path.realpath(__file__)
+    resource_file = os.path.join(os.path.dirname(script_file), "resource", "resource.blend")
+
+    with bpy.data.libraries.load(resource_file, link=False) as (data_from, data_to):
+        for ng in data_from.node_groups:
+            if bpy.data.node_groups.get(ng):
+                continue
+            else:
+                data_to.node_groups.append(ng)
+                print("append:", ng)
+
+
 def register():
     bpy.types.Scene.canny_output_path = bpy.props.StringProperty(name="output path", default="//canny_edge")
     bpy.types.Scene.canny_data = bpy.props.CollectionProperty(type=CANNY_DATA)
@@ -202,6 +228,8 @@ def register():
     bpy.types.Scene.canny_server_port_lock = bpy.props.BoolProperty(name="server port lock", default=True)
     bpy.types.Scene.canny_server_port = bpy.props.IntProperty(name="server port", default=8080, min=0, max=65535)
 
-def unregister():
-    pass
+    # リソース読み込み
+    bpy.app.handlers.load_post.append(import_resource)
 
+def unregister():
+    bpy.app.handlers.load_post.remove(import_resource)
