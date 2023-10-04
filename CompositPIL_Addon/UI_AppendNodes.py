@@ -21,10 +21,11 @@ class COMPOSIT_PIL_OT_append_material_nodes(bpy.types.Operator):
 
         with bpy.data.libraries.load(resource_file, link=False, relative=True) as (data_from, data_to):
             for ng in data_from.node_groups:
-                if bpy.data.node_groups.get(ng):  # 存在すればなにもしない
-                    continue
-                else:
-                    if ng in TARGET_MATERIAL_NODES:
+                # 追加対象のみ処理
+                if ng in TARGET_MATERIAL_NODES:
+                    if bpy.data.node_groups.get(ng):  # 存在すればなにもしない
+                        continue
+                    else:
                         data_to.node_groups.append(ng)
                         print("append:", ng)
 
@@ -46,10 +47,11 @@ class COMPOSIT_PIL_OT_append_composit_nodes(bpy.types.Operator):
 
         with bpy.data.libraries.load(resource_file, link=False, relative=True) as (data_from, data_to):
             for ng in data_from.node_groups:
-                if bpy.data.node_groups.get(ng):  # 存在すればなにもしない
-                    continue
-                else:
-                    if ng in TARGET_COMPOSIT_NODES:
+                # 追加対象のみ処理
+                if ng in TARGET_COMPOSIT_NODES:
+                    if bpy.data.node_groups.get(ng):  # 存在すればなにもしない
+                        continue
+                    else:
                         data_to.node_groups.append(ng)
                         print("append:", ng)
 
