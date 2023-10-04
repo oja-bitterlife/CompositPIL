@@ -1,7 +1,7 @@
 import bpy
 import os.path
 
-TARGET_MATERIAL_NODES = ["OjaNPR2023.7"]
+TARGET_MATERIAL_NODES = ["OjaNPR2023.10"]
 TARGET_COMPOSIT_NODES = ["OjaCOMPIL_Normal"]
 
 # Append
@@ -24,8 +24,9 @@ class COMPOSIT_PIL_OT_append_material_nodes(bpy.types.Operator):
                 if bpy.data.node_groups.get(ng):  # 存在すればなにもしない
                     continue
                 else:
-                    data_to.node_groups.append(ng)
-                    print("append:", ng)
+                    if ng in TARGET_MATERIAL_NODES:
+                        data_to.node_groups.append(ng)
+                        print("append:", ng)
 
         return{'FINISHED'}
 
@@ -48,8 +49,9 @@ class COMPOSIT_PIL_OT_append_composit_nodes(bpy.types.Operator):
                 if bpy.data.node_groups.get(ng):  # 存在すればなにもしない
                     continue
                 else:
-                    data_to.node_groups.append(ng)
-                    print("append:", ng)
+                    if ng in TARGET_COMPOSIT_NODES:
+                        data_to.node_groups.append(ng)
+                        print("append:", ng)
 
         return{'FINISHED'}
 
