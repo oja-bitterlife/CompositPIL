@@ -1,7 +1,7 @@
 import bpy
 import os.path
 
-TARGET_MATERIAL_NODES = ["OjaNPR2023.10"]
+TARGET_MATERIAL_NODES = ["OjaNPR2023.10", "OjaSpec2023.10"]
 TARGET_COMPOSIT_NODES = ["OjaCOMPIL_Normal"]
 
 # Append
