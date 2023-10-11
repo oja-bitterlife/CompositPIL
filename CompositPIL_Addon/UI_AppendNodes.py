@@ -29,7 +29,6 @@ def AppendNodes():
         for ng in data_from.node_groups:
             # 追加対象のみ処理
             if ng in TARGET_NODE_GROUPS:
-                print(ng)
                 if bpy.data.node_groups.get(ng):  # 存在すればなにもしない
                     continue
                 else:
