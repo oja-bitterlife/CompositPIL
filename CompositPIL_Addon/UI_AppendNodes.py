@@ -7,6 +7,7 @@ TARGET_NODE_GROUPS = [
     "OjaSpec2023.10",
     # GeometryNodes
     "OjaGN_Billboard_ZRot",
+    "OjaGN_AutoSmooth",
     # Compositing
     "OjaCOMPIL_Normal",
 ]
