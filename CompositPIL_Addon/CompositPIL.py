@@ -10,7 +10,7 @@ COMPIL_CATEGORY = "CompositPIL"
 # ===========================================================================================
 # Compositing Tools Panel
 class COMPOSIT_PIL_PT_node_ui(bpy.types.Panel):
-    bl_label = "ConvertCanny"
+    bl_label = "NodeUtil"
     bl_space_type = "NODE_EDITOR"
     bl_region_type = "UI"
     bl_category = COMPIL_CATEGORY
@@ -22,7 +22,7 @@ class COMPOSIT_PIL_PT_node_ui(bpy.types.Panel):
 
 
 class COMPOSIT_PIL_PT_view_ui(bpy.types.Panel):
-    bl_label = "ConvertCanny"
+    bl_label = "NodeUtil"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = COMPIL_CATEGORY
@@ -31,6 +31,17 @@ class COMPOSIT_PIL_PT_view_ui(bpy.types.Panel):
     def draw(self, context):
         self.layout.label(text="Append Resources")
         self.layout.operator("composit_pil.append_3dview_nodes")
+
+
+class COMPOSIT_PIL_PT_compositing_ui(bpy.types.Panel):
+    bl_label = "ConvertCanny"
+    bl_space_type = "NODE_EDITOR"
+    bl_region_type = "UI"
+    bl_category = COMPIL_CATEGORY
+    bl_idname = "COMPOSIT_PIL_PT_COMP_UI"
+
+    def draw(self, context):
+        UI_SendPIL.draw(self, context)
 
 
 def register():
