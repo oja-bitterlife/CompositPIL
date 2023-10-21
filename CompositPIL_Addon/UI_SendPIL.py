@@ -1,8 +1,5 @@
 import bpy
-import os.path
 import requests, json
-from urllib.parse import urlencode
-from bpy.app.handlers import persistent
 
 
 # DEFINE
@@ -55,10 +52,14 @@ def run(context, canny_url, no):
     }
 
     # リモート実行
-    response = requests.get(canny_url, params=data)
-    print(response.text)
+    try:
+        response = requests.get(canny_url, params=data)
+        if response.status_code != 200:
+            return "サーバでの処理に失敗しました"
+    except Exception as e:
+        return "サーバとの接続に失敗しました"
 
-    return response
+    return None
 
 class COMPOSIT_PIL_OT_run_all(bpy.types.Operator):
     bl_idname = "composit_pil.run_all"
@@ -85,7 +86,10 @@ class COMPOSIT_PIL_OT_run(bpy.types.Operator):
     id: bpy.props.IntProperty()
 
     def execute(self, context):
-        response = run(context, CANNY_SERVER_URL.format(context.scene.canny_server_port), self.id)
+        error_txt = run(context, CANNY_SERVER_URL.format(context.scene.canny_server_port), self.id)
+        if error_txt != None:
+            self.report({'ERROR'}, error_txt)
+            return{'FINISHED'}
 
         # 自動更新
         if context.scene.canny_after_reload:
