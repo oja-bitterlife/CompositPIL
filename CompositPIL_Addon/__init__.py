@@ -15,8 +15,8 @@ bl_info = {
     "name" : "CompositPIL",
     "author" : "oja",
     "description" : "",
-    "blender" : (3, 6, 0),         
-    "version" : (0, 6, 0),
+    "blender" : (4, 0, 0),         
+    "version" : (0, 7, 0),
     "location" : "",
     "warning" : "",
     "category" : "Render"
