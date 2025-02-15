@@ -1,5 +1,5 @@
 import bpy
-
+import json
 from .send import SendPIL
 
 # UIカテゴリ名
